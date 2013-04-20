@@ -8,11 +8,17 @@ if os.name=="posix":
 
 exchangeURLs = { 'Mt Gox': ['https://data.mtgox.com/api/2/BTCUSD/money/ticker', 'data/last_local/display', ''], 
 				 'CoinBase Xch': ['https://coinbase.com/api/v1/currencies/exchange_rates', 'btc_to_usd', ''],
-				 'CoinBase Buy': ['https://coinbase.com/api/v1/prices/buy', 'amount', ''],
-				 'Bitfloor Bid': ['https://api.bitfloor.com/book/L1/1', 'bid', ''],
-				 'Bitfloor Ask': ['https://api.bitfloor.com/book/L1/1', 'ask', '']
+				 'CoinBase Buy': ['https://coinbase.com/api/v1/prices/buy', 'amount', '']
+				 #'Bitfloor Bid': ['https://api.bitfloor.com/book/L1/1', 'bid', ''],	# Bitfloor shut down 2013-Apr-17
+				 #'Bitfloor Ask': ['https://api.bitfloor.com/book/L1/1', 'ask', '']
 			   }
 
+# Fees
+"""
+Coinbase - 1% + $0.15/transaction
+Bitfloor - 0.4% for buying BTC, -0.1% for selling BTC (you earn money)
+Mt Gox - 0.6% or lower depending on volume + Dwolla ($0.25/transaction)
+"""
 #coinbaseBuyURL = 'https://coinbase.com/api/v1/account/balance'
 btcQty = 1
 btcVary = True

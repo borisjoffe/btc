@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# Run btc every user-specified amount of seconds
+#	(default is 60 seconds)
+# Works great as a realtime ticker in a dedicated terminal window
+#
+# NOTE: this requires `btc` to be in your PATH. Create a symbolic link
+#	if you haven't already.
+
+if [ -z "$1" ]; then
+	sleeptime=60
+else
+	sleeptime=$1
+fi
+
+echo Running every $sleeptime seconds
+
+while true; do btc; sleep $sleeptime; reset; done

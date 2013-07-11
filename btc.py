@@ -3,6 +3,7 @@
 import urllib, urllib2, json, sys, argparse, string, threading, os
 from subprocess import check_output
 import config
+from time import sleep
 if os.name=="posix":
 	import curses, termios
 
@@ -13,6 +14,9 @@ exchangeURLs = { 'Mt Gox': ['https://data.mtgox.com/api/2/BTCUSD/money/ticker', 
 				 #'Bitfloor Ask': ['https://api.bitfloor.com/book/L1/1', 'ask', '']
 			   }
 
+exchanges = [ 'Mt Gox', 'CoinBase Xch', 'CoinBase Buy' ]
+#exchangeURL = [ 
+
 # Fees
 """
 Coinbase - 1% + $0.15/transaction
@@ -22,9 +26,20 @@ Mt Gox - 0.6% or lower depending on volume + Dwolla ($0.25/transaction)
 #coinbaseBuyURL = 'https://coinbase.com/api/v1/account/balance'
 btcQty = 1
 btcVary = True
+DEFAULT_REALTIME_SECONDS = 10	# default number of seconds for realtime ticker
 HIGHLIGHT_COLOR = '\x1b[96;1m'
 highlightXch = 'CoinBase Buy'
 HIGHLIGHT_END = '\x1b[0m'
+
+# use ANSI ESC codes for realtime option 
+#	http://en.wikipedia.org/wiki/ANSI_escape_code
+PREVIOUS_LINE = '\x1b[1F'	# go to beginning of previous line
+CURSOR_UP = '\x1b[1A'	# go up one line
+CURSOR_DOWN = '\x1b[1B'
+CURSOR_FORWARD = '\x1b[1C'
+CURSOR_BACK = '\x1b[1D'
+SAVE_CURSOR = '\x1b[s'
+RESTORE_CURSOR = '\x1b[u'
 
 def buyBTC(btcQty=1, btcVary=True, dryRun=True, verbose=False, confirm=True):
 	coinbaseBuyURL = "https://coinbase.com/api/v1/buys"
@@ -76,11 +91,11 @@ def getRate(xch):
 	data = float(data.replace('$', '')) # temporarily remove dollar signs
 	return str('{:>.2f}'.format(data))	# format to 2 decimal places and convert back to string
 
-def showRate(xch, lock, verbose=False):
+def showRate(xch, lock=None, async=False, verbose=False, realtime=0):
 	"""Outputs nicely formatted prices for specified exchanges asynchronously"""
 	if not xch:
 		print "Error: no exchange name given to showRate()"
-	if not lock:
+	if not lock and not realtime:
 		print "Error: no lock given to showRate()"
 
 	data = getRate(xch)
@@ -95,23 +110,50 @@ def showRate(xch, lock, verbose=False):
 	xch = string.ljust(xch, 15)	# align it left and pad up to 15 spaces
 
 	#if lock.acquire():
-	print '{xch}: {data}'.format(xch=xch, data=data)
+	if lock and realtime<=0:
+		print '{xch}: {data}'.format(xch=xch, data=data)
+		return '{xch}: {data}'.format(xch=xch, data=data)
 		#lock.release()
+	if realtime > 0:
+		return '{xch}: {data}'.format(xch=xch, data=data)
+		#print CURSOR_UP * 1 + CURSOR_FORWARD * 17 + data
 
-def showRates(verbose=False, async=True, realtime=True):
+def showRates(verbose=False, async=True, realtime=0):
 	"""Outputs nicely formatted prices for the exchanges listed in exchangeURLs"""
-	if os.name=="posix" and realtime:	# realtime curses mode (*NIX only)
-		stdscr = curses.initscr()
-		#curses.noecho()
-		#curses.cbreak()
-		#stdscr.keypad(1)
-		win = curses.newwin(200, 80, 0, 0)
+	if realtime > 0:	# realtime mode (*NIX only)
+		if not os.name=="posix":
+			print "Error: realtime option is only supported on *NIX systems"
+			return
 
-		win.addstr( "hello")
-		stdscr.refresh()
-		stdscr.getch()
-		#curses.nocbreak(); stdscr.keypad(0); curses.echo(); 
-		curses.endwin()	# end curses
+		# TODO
+		# make exchanges ordered - n-dim array - name, url, json
+		# have exchange use ANSI ESC codes based on index
+		# do we need to implement locks for stdout? or make them return values?? (extend Thread class??)
+		# how to implement waiting interval before updates
+		# remove curses deps and any others which are not required
+
+		#print SAVE_CURSOR + CURSOR_UP
+		
+		# show initial table - has to be in order the same way to make sure
+		#	all prices are displayed
+		firstRun = True
+		while True:
+			try:
+				bufferStr =  '=== ' + check_output(['date'])[:-1] + ' ===\n' 	# timestamp
+				for xch in exchangeURLs:
+					bufferStr +=  showRate(xch, realtime=2) + "\n"
+					#print string.ljust(xch, 15) + ": ..."
+					#lock = None
+					#t = threading.Thread(target=showRate, args=[xch, lock, realtime])
+					#t.start()
+				if not firstRun: print PREVIOUS_LINE * 5
+				print bufferStr[:-1]
+				firstRun = False
+				sleep(realtime)
+			except:
+				print "\nExiting."
+				sys.exit()
+
 		return
 
 	if async:	# 2 threads can print to stdout (haven't implement locks yet)
@@ -144,7 +186,7 @@ def main():
 	parser.add_argument('--dry-run', action='store_const', default=False, const=True, help="Simulate buying BTC but do not actually buy anything") 
 	parser.add_argument('--verbose', action='store_const', default=False, const=True)
 	parser.add_argument('--no-async', action='store_const', default=False, const=True, help="Get prices one by one (slower but formatting is correct)")
-	parser.add_argument('--realtime', action='store_const', default=False, const=True, help="Show realtime ticker (Only on UNIX)")
+	parser.add_argument('--realtime', nargs='?', type=int, const=DEFAULT_REALTIME_SECONDS, help="Show realtime ticker refreshing every REALTIME seconds (Only on UNIX)")
 
 	args = parser.parse_args()
 	if args.verbose: print 'args =', args

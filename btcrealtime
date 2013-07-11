@@ -13,6 +13,7 @@ else
 	sleeptime=$1
 fi
 
-echo Running every $sleeptime seconds
+echo Running about every $sleeptime seconds
 
-while true; do btc; sleep $sleeptime; reset; done
+btc --realtime $1
+#while true; do btc; sleep $sleeptime; reset; done

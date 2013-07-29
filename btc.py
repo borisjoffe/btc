@@ -9,12 +9,13 @@ if os.name=="posix":
 
 exchangeURLs = { 'Mt Gox': ['https://data.mtgox.com/api/2/BTCUSD/money/ticker', 'data/last_local/display', ''], 
 				 'CoinBase Xch': ['https://coinbase.com/api/v1/currencies/exchange_rates', 'btc_to_usd', ''],
-				 'CoinBase Buy': ['https://coinbase.com/api/v1/prices/buy', 'amount', '']
+				 'CoinBase Buy': ['https://coinbase.com/api/v1/prices/buy', 'amount', ''],
+				 'CampBX': ['http://campbx.com/api/xticker.php', 'Last Trade', '']
 				 #'Bitfloor Bid': ['https://api.bitfloor.com/book/L1/1', 'bid', ''],	# Bitfloor shut down 2013-Apr-17
 				 #'Bitfloor Ask': ['https://api.bitfloor.com/book/L1/1', 'ask', '']
 			   }
 
-exchanges = [ 'Mt Gox', 'CoinBase Xch', 'CoinBase Buy' ]
+exchanges = [ 'Mt Gox', 'CampBX', 'CoinBase Xch', 'CoinBase Buy' ]
 #exchangeURL = [ 
 
 # Fees

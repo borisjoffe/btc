@@ -35,6 +35,7 @@ HIGHLIGHT_END = '\x1b[0m'
 # use ANSI ESC codes for realtime option 
 #	http://en.wikipedia.org/wiki/ANSI_escape_code
 PREVIOUS_LINE = '\x1b[1F'	# go to beginning of previous line
+ERASE_LINE = '\x1b[2K'	# clears entire line in terminal
 CURSOR_UP = '\x1b[1A'	# go up one line
 CURSOR_DOWN = '\x1b[1B'
 CURSOR_FORWARD = '\x1b[1C'
@@ -143,11 +144,8 @@ def showRates(verbose=False, async=True, realtime=0):
 				bufferStr =  '=== ' + check_output(['date'])[:-1] + ' ===\n' 	# timestamp
 				for xch in exchangeURLs:
 					bufferStr +=  showRate(xch, realtime=2) + "\n"
-					#print string.ljust(xch, 15) + ": ..."
-					#lock = None
-					#t = threading.Thread(target=showRate, args=[xch, lock, realtime])
-					#t.start()
-				if not firstRun: print PREVIOUS_LINE * 5
+						
+				if not firstRun: print (ERASE_LINE + PREVIOUS_LINE) * 6
 				print bufferStr[:-1]
 				firstRun = False
 				sleep(realtime)

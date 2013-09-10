@@ -78,9 +78,9 @@ def getRate(xch):
 		print "Error: no exchange name given to getRate()";
 
 	try:
-		data = json.load( urllib2.urlopen( exchangeURLs[xch][0] ) )
-	except urllib2.URLError:
-		return "ERROR: Could not retrieve data"
+		data = json.load( urllib2.urlopen(exchangeURLs[xch][0]) )
+	except Exception as e:
+		return str(e)
 
 	keys = exchangeURLs[xch][1].split('/')
 

@@ -29,7 +29,7 @@ btcQty = 1
 btcVary = True
 DEFAULT_REALTIME_SECONDS = 10	# default number of seconds for realtime ticker
 HIGHLIGHT_COLOR = '\x1b[96;1m'
-highlightXch = 'CoinBase Buy'
+highlightXch = 'CampBX'
 HIGHLIGHT_END = '\x1b[0m'
 
 # use ANSI ESC codes for realtime option 

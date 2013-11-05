@@ -97,6 +97,9 @@ def getRate(xch):
 	data = float(data.replace('$', '')) # temporarily remove dollar signs
 	return str('{:>.2f}'.format(data))	# format to 2 decimal places and convert back to string
 
+def formatRate(xch, data):
+	return '{xch}: {data}'.format(xch=xch, data=data)
+
 def showRate(xch, lock=None, async=False, verbose=False, realtime=0):
 	"""Outputs nicely formatted prices for specified exchanges asynchronously"""
 	if not xch:
@@ -110,24 +113,30 @@ def showRate(xch, lock=None, async=False, verbose=False, realtime=0):
 	if data.find('$') == -1: 	# add dollar sign
 		data = '$' + data
 
-	if config.use_colors and xch==highlightXch:		# highlight the most important one
+	if config.use_colors and xch == highlightXch:		# highlight the most important one
 		data = HIGHLIGHT_COLOR + data + HIGHLIGHT_END
 
 	xch = xch.ljust(15)	# align it left and pad up to 15 spaces
 
 	#if lock.acquire():
-	if lock and realtime<=0:
-		print '{xch}: {data}'.format(xch=xch, data=data)
-		return '{xch}: {data}'.format(xch=xch, data=data)
+	if lock and realtime <= 0:
+		lock.acquire()
+		try:
+			#print "lock acquired by: " + xch
+			print formatRate(xch, data)
+		finally:
+			lock.release()
+			#print "lock released by: " + xch
+		return formatRate(xch, data)
 		#lock.release()
 	if realtime > 0:
-		return '{xch}: {data}'.format(xch=xch, data=data)
+		return formatRate(xch, data)
 		#print CURSOR_UP * 1 + CURSOR_FORWARD * 17 + data
 
 def showRates(verbose=False, async=True, realtime=0):
 	"""Outputs nicely formatted prices for the exchanges listed in exchangeURLs"""
 	if realtime > 0:	# realtime mode (*NIX only)
-		if not os.name=="posix":
+		if not os.name == "posix":
 			print "Error: realtime option is only supported on *NIX systems"
 			return
 
@@ -136,7 +145,6 @@ def showRates(verbose=False, async=True, realtime=0):
 		# have exchange use ANSI ESC codes based on index
 		# do we need to implement locks for stdout? or make them return values?? (extend Thread class??)
 		# how to implement waiting interval before updates
-		# remove curses deps and any others which are not required
 
 		#print SAVE_CURSOR + CURSOR_UP
 		
@@ -177,7 +185,7 @@ def showRates(verbose=False, async=True, realtime=0):
 		if data.find('$') == -1: 	# add dollar sign
 			data = '$' + data
 
-		if config.use_colors and xch==highlightXch:		# highlight the most important one
+		if config.use_colors and xch == highlightXch:		# highlight the most important one
 			data = HIGHLIGHT_COLOR + data + HIGHLIGHT_END
 
 		xch = xch.ljust(15)	# align it left and pad up to 15 spaces

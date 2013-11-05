@@ -76,6 +76,11 @@ def getRate(xch):
 	if not xch:
 		print "Error: no exchange name given to getRate()";
 
+	# Spoof browser to allow retrieval from sites that disallow bots (like Coinbase)
+	opener = urllib2.build_opener()
+	opener.addheaders = [('User-agent', 'Mozilla/5.0')]
+	urllib2.install_opener(opener)
+
 	try:
 		data = json.load( urllib2.urlopen(exchangeURLs[xch][0]) )
 	except Exception as e:

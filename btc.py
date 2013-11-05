@@ -1,22 +1,21 @@
 #!/usr/bin/python
 
-import urllib, urllib2, json, sys, argparse, string, threading, os
+import urllib, urllib2, json, sys, argparse, threading, os
 from subprocess import check_output
 import config
 from time import sleep
-if os.name=="posix":
+if os.name == "posix":
 	import curses, termios
 
 exchangeURLs = { 'Mt Gox': ['https://data.mtgox.com/api/2/BTCUSD/money/ticker', 'data/last_local/display', ''], 
-				 'CoinBase Xch': ['https://coinbase.com/api/v1/currencies/exchange_rates', 'btc_to_usd', ''],
-				 'CoinBase Buy': ['https://coinbase.com/api/v1/prices/buy', 'amount', ''],
+				 'CoinBase Sell': ['http://coinbase.com/api/v1/prices/sell', 'subtotal/amount', ''],
+				 'CoinBase Buy': ['https://coinbase.com/api/v1/prices/buy', 'subtotal/amount', ''],
 				 'CampBX': ['http://campbx.com/api/xticker.php', 'Last Trade', '']
 				 #'Bitfloor Bid': ['https://api.bitfloor.com/book/L1/1', 'bid', ''],	# Bitfloor shut down 2013-Apr-17
 				 #'Bitfloor Ask': ['https://api.bitfloor.com/book/L1/1', 'ask', '']
 			   }
 
-exchanges = [ 'Mt Gox', 'CampBX', 'CoinBase Xch', 'CoinBase Buy' ]
-#exchangeURL = [ 
+exchanges = exchangeURLs.keys()
 
 # Fees
 """
@@ -109,7 +108,7 @@ def showRate(xch, lock=None, async=False, verbose=False, realtime=0):
 	if config.use_colors and xch==highlightXch:		# highlight the most important one
 		data = HIGHLIGHT_COLOR + data + HIGHLIGHT_END
 
-	xch = string.ljust(xch, 15)	# align it left and pad up to 15 spaces
+	xch = xch.ljust(15)	# align it left and pad up to 15 spaces
 
 	#if lock.acquire():
 	if lock and realtime<=0:
@@ -158,11 +157,11 @@ def showRates(verbose=False, async=True, realtime=0):
 	if async:	# 2 threads can print to stdout (haven't implement locks yet)
 		print "Getting prices (fast version, formatting may be off)..."
 		print '===', check_output(['date'])[:-1], '===' 	# timestamp
-		for xch in exchangeURLs:
+		for xch in exchanges:
 			lock = threading.RLock()
 			t = threading.Thread(target=showRate, args=[xch, lock]);
 			t.start()
-		return
+		sys.exit()
 
 	print '===', check_output(['date'])[:-1], '===' 	# timestamp
 	print "Getting prices..."
@@ -176,7 +175,7 @@ def showRates(verbose=False, async=True, realtime=0):
 		if config.use_colors and xch==highlightXch:		# highlight the most important one
 			data = HIGHLIGHT_COLOR + data + HIGHLIGHT_END
 
-		xch = string.ljust(xch, 15)	# align it left and pad up to 15 spaces
+		xch = xch.ljust(15)	# align it left and pad up to 15 spaces
 		print '{xch}: {data}'.format(xch=xch, data=data)
 
 def main():

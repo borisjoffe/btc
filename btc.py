@@ -150,17 +150,30 @@ def showRates(verbose=False, async=True, realtime=0):
 		
 		# show initial table - has to be in order the same way to make sure
 		#	all prices are displayed
+
+		# if displayImmediately is True, start every cycle showing nothing
+		#	and then revealing prices one by one - good for long refresh periods
+		# if displayImmediately is False, buffer up all exchanges and display at once (thereby, after the firstRun
+		# 	all exchanges are always visible
+
+		ERASE_LAST_LINES = (ERASE_LINE + PREVIOUS_LINE) * 6
+		displayImmediately = True
 		firstRun = True
 		while True:
 			try:
-				bufferStr =  '=== ' + check_output(['date'])[:-1] + ' ===\n' 	# timestamp
+				bufferStr = ['=== ' + check_output(['date'])[:-1] + ' ==='] 	# timestamp
+				if displayImmediately: print bufferStr[-1]
 				for xch in exchangeURLs:
-					bufferStr +=  showRate(xch, realtime=2) + "\n"
+					bufferStr.append( showRate(xch, realtime=realtime) )
+					if displayImmediately: print bufferStr[-1]
 						
-				if not firstRun: print (ERASE_LINE + PREVIOUS_LINE) * 6
-				print bufferStr[:-1]
-				firstRun = False
+				if not displayImmediately:
+					if not firstRun: print ERASE_LAST_LINES
+					firstRun = False
+					print '\n'.join(bufferStr)
+
 				sleep(realtime)
+				if displayImmediately: print ERASE_LAST_LINES
 			except:
 				print "\nExiting."
 				sys.exit()

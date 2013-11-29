@@ -94,8 +94,8 @@ def getRate(xch):
 	if type(data) is list: # if we're left with a list, get the first element (for Bitfloor?)
 		data = data[0]
 
-	data = float(data.replace('$', '')) # temporarily remove dollar signs
-	return str('{:>.2f}'.format(data))	# format to 2 decimal places and convert back to string
+	data = float(data.replace('$', '').replace(',', '')) # temporarily remove dollar signs
+	return str('{:>9,.2f}'.format(data))	# format to 2 decimal places and convert back to string
 
 def formatRate(xch, data):
 	return '{xch}: {data}'.format(xch=xch, data=data)

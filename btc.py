@@ -7,15 +7,20 @@ from time import sleep
 if os.name == "posix":
 	import curses, termios
 
-exchangeURLs = { 'Mt Gox': ['https://data.mtgox.com/api/2/BTCUSD/money/ticker', 'data/last_local/display', ''], 
-				 'CoinBase Sell': ['http://coinbase.com/api/v1/prices/sell', 'subtotal/amount', ''],
+DEBUG = True
+
+exchangeURLs = { 'CoinBase Sell': ['http://coinbase.com/api/v1/prices/sell', 'subtotal/amount', ''],
 				 'CoinBase Buy': ['https://coinbase.com/api/v1/prices/buy', 'subtotal/amount', ''],
-				 'CampBX': ['http://campbx.com/api/xticker.php', 'Last Trade', '']
+				 'CampBX Buy': ['http://campbx.com/api/xticker.php', 'Best Ask', ''],
+				 'Coinsetter Buy': ['https://api.coinsetter.com/v1/marketdata/ticker', 'bid/price', ''],
+				 'Coinsetter Sell': ['https://api.coinsetter.com/v1/marketdata/ticker', 'ask/price', ''],
 				 #'Bitfloor Bid': ['https://api.bitfloor.com/book/L1/1', 'bid', ''],	# Bitfloor shut down 2013-Apr-17
 				 #'Bitfloor Ask': ['https://api.bitfloor.com/book/L1/1', 'ask', '']
+				 #'Mt Gox Last': ['https://data.mtgox.com/api/2/BTCUSD/money/ticker', 'data/last_local/display', ''],
 			   }
 
 exchanges = exchangeURLs.keys()
+highlightXch = 'CampBX Buy' # highlight this exchange
 
 # Fees
 """

@@ -17,6 +17,8 @@ All rates (in non-realtime mode) are retrieved asynchronously to speed up the pr
 
 Or use `btc --realtime <number of seconds>` to update the ticker continuously. If the number of seconds is left out, the default is every 10 seconds.
 
+![Realtime BTC ticker in the command line](screenshot_2013-11.png)
+
 Buying Bitcoins via Coinbase
 ---
 Run `btc --buy <number of bitcoins>` to buy bitcoins via Coinbase. The default number of bitcoins to buy is one. It will tell you the latest price on Coinbase, give you your total, and prompt for confirmation. The response with the order confirmation is output to the terminal in JSON (save this output just in case). Many times it will fail though due to an internal Coinbase limit.

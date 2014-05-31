@@ -35,7 +35,7 @@ DEFAULT_REALTIME_SECONDS = 300	# default number of seconds for realtime ticker
 HIGHLIGHT_COLOR = '\x1b[96;1m'
 HIGHLIGHT_END = '\x1b[0m'
 
-# use ANSI ESC codes for realtime option 
+# use ANSI ESC codes for realtime option
 #	http://en.wikipedia.org/wiki/ANSI_escape_code
 PREVIOUS_LINE = '\x1b[1F'	# go to beginning of previous line
 ERASE_LINE = '\x1b[2K'	# clears entire line in terminal
@@ -91,14 +91,20 @@ def getRate(xch):
 		return str(e)
 
 	keys = exchangeURLs[xch][1].split('/')
+	data_old = data
 
 	for i in range(len(keys)):	# drill down the json based on forward slash separated keys
-		data = data[keys[i]]
+		try:
+			data = data[keys[i]]
+		except KeyError as e:
+			return str(data_old) + "| ERR: " + str(e) + " key does not exist"
+		except Exception as e:
+			return str(data_old) + "| ERR: " + str(e) + " key does not exist"
 
 	if type(data) is list: # if we're left with a list, get the first element (for Bitfloor?)
 		data = data[0]
 
-	data = float(data.replace('$', '').replace(',', '')) # temporarily remove dollar signs
+	data = float(str(data).replace('$', '').replace(',', '')) # temporarily remove dollar signs
 	return str('{:>9,.2f}'.format(data))	# format to 2 decimal places and convert back to string
 
 def formatRate(xch, data):
@@ -158,10 +164,10 @@ def showRates(verbose=False, async=True, realtime=0):
 		# if displayImmediately is True, start every cycle showing nothing
 		#	and then revealing prices one by one - good for long refresh periods
 		# if displayImmediately is False, buffer up all exchanges and display at once (thereby, after the firstRun
-		# 	all exchanges are always visible
+		# 	all exchanges are always visible) - good for very slow Internet connections
 
 		ERASE_LAST_LINES = (ERASE_LINE + PREVIOUS_LINE) * 6
-		displayImmediately = True
+		displayImmediately = False
 		firstRun = True
 		while True:
 			try:
@@ -178,8 +184,12 @@ def showRates(verbose=False, async=True, realtime=0):
 
 				sleep(realtime)
 				if displayImmediately: print ERASE_LAST_LINES
-			except:
+			except KeyboardInterrupt as e:
 				print "\nExiting."
+				if DEBUG and str(e): print "ERR: " + str(e)
+				sys.exit()
+			except Exception as e:
+				if str(e): print "ERR: " + str(e)
 				sys.exit()
 
 		return
@@ -211,7 +221,7 @@ def showRates(verbose=False, async=True, realtime=0):
 def main():
 	parser = argparse.ArgumentParser(description='Buy BTC or Show BTC:USD rates')
 	parser.add_argument('--buy', nargs='?', const=1, help="Buy BTC" )
-	parser.add_argument('--dry-run', action='store_const', default=False, const=True, help="Simulate buying BTC but do not actually buy anything") 
+	parser.add_argument('--dry-run', action='store_const', default=False, const=True, help="Simulate buying BTC but do not actually buy anything")
 	parser.add_argument('--verbose', action='store_const', default=False, const=True)
 	parser.add_argument('--no-async', action='store_const', default=False, const=True, help="Get prices one by one (slower but formatting is correct)")
 	parser.add_argument('--realtime', nargs='?', type=int, const=DEFAULT_REALTIME_SECONDS, help="Show realtime ticker refreshing every REALTIME seconds (Only on UNIX)")

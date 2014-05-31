@@ -31,9 +31,8 @@ Mt Gox - 0.6% or lower depending on volume + Dwolla ($0.25/transaction)
 #coinbaseBuyURL = 'https://coinbase.com/api/v1/account/balance'
 btcQty = 1
 btcVary = True
-DEFAULT_REALTIME_SECONDS = 10	# default number of seconds for realtime ticker
+DEFAULT_REALTIME_SECONDS = 300	# default number of seconds for realtime ticker
 HIGHLIGHT_COLOR = '\x1b[96;1m'
-highlightXch = 'CampBX'
 HIGHLIGHT_END = '\x1b[0m'
 
 # use ANSI ESC codes for realtime option 

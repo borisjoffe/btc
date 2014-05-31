@@ -3,7 +3,7 @@ btc
 
 About
 ---
-Gets BTC:USD prices from Mt Gox, CampBX, and Coinbase Sell/Buy. You can also buy bitcoins via Coinbase if an API key is provided.
+Gets BTC:USD prices from Coinbase, CampBX, and Coinsetter. You can also buy bitcoins via Coinbase if an API key is provided.
 
 Install
 ---
@@ -11,11 +11,11 @@ Run `setup.py` to initialize a configuration file and input your Coinbase API ke
 
 Showing current rates
 ---
-Run `btc` by itself to show current rates from Mt Gox, CampBX, and Coinbase Sell/Buy. The CampBX price is bolded and in blue on \*NIX systems.
+Run `btc` by itself to show current rates from Coinbase, CampBX, and Coinsetter. The CampBX price is bolded and in blue on \*NIX systems.
 
 All rates (in non-realtime mode) are retrieved asynchronously to speed up the program. However, I haven't added locks yet to deal with printing to stdout at the same time so the formatting may occasionally be a little bit messed up. Use `btc --no-async` to run it slowly with all formatting intact.
 
-Or use `btc --realtime <number of seconds>` to update the ticker continuously. If the number of seconds is left out, the default is every 10 seconds.
+Or use `btc --realtime <number of seconds>` to update the ticker continuously. If the number of seconds is left out, the default is every 300 seconds (5 minutes).
 
 ![Realtime BTC ticker in the command line](screenshot_2013-11.png)
 

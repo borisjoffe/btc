@@ -17,7 +17,7 @@ exchangeURLs = { 'CoinBase Sell': ['http://coinbase.com/api/v1/prices/sell', 'su
                  #'Bitfloor Bid': ['https://api.bitfloor.com/book/L1/1', 'bid', ''],    # Bitfloor shut down 2013-Apr-17
                  #'Bitfloor Ask': ['https://api.bitfloor.com/book/L1/1', 'ask', '']
                  #'Mt Gox Last': ['https://data.mtgox.com/api/2/BTCUSD/money/ticker', 'data/last_local/display', ''],
-               }
+}
 
 exchanges = list(exchangeURLs.keys())
 highlightXch = 'CampBX Buy' # highlight this exchange
@@ -38,8 +38,8 @@ HIGHLIGHT_END = '\x1b[0m'
 # use ANSI ESC codes for realtime option
 #    http://en.wikipedia.org/wiki/ANSI_escape_code
 PREVIOUS_LINE = '\x1b[1F'    # go to beginning of previous line
-ERASE_LINE = '\x1b[2K'    # clears entire line in terminal
-CURSOR_UP = '\x1b[1A'    # go up one line
+ERASE_LINE = '\x1b[2K'       # clears entire line in terminal
+CURSOR_UP = '\x1b[1A'        # go up one line
 CURSOR_DOWN = '\x1b[1B'
 CURSOR_FORWARD = '\x1b[1C'
 CURSOR_BACK = '\x1b[1D'

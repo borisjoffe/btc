@@ -1,6 +1,8 @@
 #!/usr/bin/python
 
-import urllib.request, urllib.parse, urllib.error, urllib.request, urllib.error, urllib.parse, json, sys, argparse, threading, os
+import json, sys, argparse, threading, os
+import urllib.request, urllib.parse
+import requests
 from subprocess import check_output
 import config
 from time import sleep
@@ -81,12 +83,10 @@ def getRate(xch):
         print("Error: no exchange name given to getRate()");
 
     # Spoof browser to allow retrieval from sites that disallow bots (like Coinbase)
-    opener = urllib.request.build_opener()
-    opener.addheaders = [('User-agent', 'Mozilla/5.0')]
-    urllib.request.install_opener(opener)
+    headers = {'User-agent': 'Mozilla/5.0'}
 
     try:
-        data = json.load( urllib.request.urlopen(exchangeURLs[xch][0]) )
+        data = json.loads( requests.get(exchangeURLs[xch][0], headers).text )
     except Exception as e:
         return str(e)
 

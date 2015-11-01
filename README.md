@@ -47,10 +47,10 @@ Help Info
 	  --realtime [REALTIME]
 							Show realtime ticker refreshing every REALTIME seconds
 							(Only on UNIX)
-	
+
 Other
 ---
-This program uses Python 2.7. 
+This program uses Python 3
 
 License
 ---

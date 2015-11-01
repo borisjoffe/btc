@@ -7,6 +7,7 @@ Gets BTC:USD prices from Coinbase, CampBX, and Coinsetter. You can also buy bitc
 
 Install
 ---
+Run `pip install -r requirements.txt` to install the `requests` library
 Run `setup.py` to initialize a configuration file and input your Coinbase API key.
 
 Showing current rates

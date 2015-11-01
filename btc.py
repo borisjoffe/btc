@@ -50,6 +50,7 @@ RESTORE_CURSOR = '\x1b[u'
 
 def buyBTC(btcQty=1, btcVary=True, dryRun=True, verbose=False, confirm=True):
     coinbaseBuyURL = "https://coinbase.com/api/v1/buys"
+    print('WARNING: This feature is untested as of the Python3 conversion and may have byte/string errors')
     print("Getting current price...")
     rate = getRate('CoinBase Buy')
     print("Current price is $" + rate + "/BTC")

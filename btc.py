@@ -2,7 +2,7 @@
 
 import urllib.request, urllib.parse, urllib.error, urllib.request, urllib.error, urllib.parse, json, sys, argparse, threading, os
 from subprocess import check_output
-from . import config
+import config
 from time import sleep
 if os.name == "posix":
 	import curses, termios

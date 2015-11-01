@@ -171,7 +171,7 @@ def showRates(verbose=False, async=True, realtime=0):
         firstRun = True
         while True:
             try:
-                bufferStr = ['=== ' + check_output(['date'])[:-1] + ' ===']     # timestamp
+                bufferStr = ['=== ' + (check_output(['date'])[:-1]).decode() + ' ===']     # timestamp
                 if displayImmediately: print(bufferStr[-1])
                 for xch in exchangeURLs:
                     bufferStr.append( showRate(xch, realtime=realtime) )

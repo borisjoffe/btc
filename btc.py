@@ -13,7 +13,7 @@ DEBUG = True
 
 exchangeURLs = { 'CoinBase Sell': ['http://coinbase.com/api/v1/prices/sell', 'subtotal/amount', ''],
                  'CoinBase Buy': ['https://coinbase.com/api/v1/prices/buy', 'subtotal/amount', ''],
-                 'CampBX Buy': ['http://campbx.com/api/xticker.php', 'Best Ask', ''],
+                 'CampBX Buy': ['https://campbx.com/api/xticker.php', 'Best Ask', ''],
                  'Coinsetter Buy': ['https://api.coinsetter.com/v1/marketdata/ticker', 'bid/price', ''],
                  'Coinsetter Sell': ['https://api.coinsetter.com/v1/marketdata/ticker', 'ask/price', ''],
                  #'Bitfloor Bid': ['https://api.bitfloor.com/book/L1/1', 'bid', ''],    # Bitfloor shut down 2013-Apr-17
@@ -84,10 +84,10 @@ def getRate(xch):
         print("Error: no exchange name given to getRate()");
 
     # Spoof browser to allow retrieval from sites that disallow bots (like Coinbase)
-    headers = {'User-agent': 'Mozilla/5.0'}
+    headers = {'user-agent': 'Mozilla/5.0'}
 
     try:
-        data = json.loads( requests.get(exchangeURLs[xch][0], headers).text )
+        data = requests.get(exchangeURLs[xch][0], headers=headers).json()
     except Exception as e:
         return str(e)
 
